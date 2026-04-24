@@ -8,7 +8,11 @@ CHOICES = (
 
 
 class Skill(models.Model):
-    name = models.CharField(max_length=124)
+    name = models.CharField('Название', max_length=124)
+
+    class Meta:
+        verbose_name = 'навык'
+        verbose_name_plural = 'Навыки'
 
     def __str__(self):
         return self.name
@@ -32,9 +36,18 @@ class Project(models.Model):
         User,
         related_name='participated_projects',
         blank=True,
+        verbose_name='Участники',
     )
     skills = models.ManyToManyField(
         Skill,
         blank=True,
         related_name='projects',
+        verbose_name='Необходимые навыки',
     )
+
+    class Meta:
+        verbose_name = 'проект'
+        verbose_name_plural = 'Проекты'
+
+    def __str__(self):
+        return self.name

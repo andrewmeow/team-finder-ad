@@ -13,6 +13,7 @@ class Command(BaseCommand):
             password='strongpassword1',
             name='Алиса',
             surname='Иванова',
+            github_url='https://github.com/nikita-voronin',
             phone='+79991234567',
             about='Frontend-разработчик, люблю React',
         )
@@ -34,6 +35,7 @@ class Command(BaseCommand):
             name='Сайт портфолио',
             description='Современное портфолио на React с анимациями',
             owner=alice,
+            github_url='https://github.com/linguabot/ai-tutor',
             status='open',
         )
         project_alice.skills.add(skill_react)

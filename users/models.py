@@ -25,12 +25,12 @@ class CustomUserManager(BaseUserManager):
 
 class User(AbstractUser):
     username = None
-    email = models.EmailField(unique=True)
+    email = models.EmailField('Email', unique=True)
     name = models.CharField('Имя', max_length=124)
     surname = models.CharField('Фамилия', max_length=124)
     avatar = models.ImageField(
-        'Изображения', upload_to='users_avatars', blank=True)
-    phone = models.CharField(max_length=12, blank=True)
+        'Аватар', upload_to='users_avatars', blank=True)
+    phone = models.CharField('Телефон', max_length=12, blank=True)
     github_url = models.URLField(
         'Ссылка на профиль GitHub', blank=True, null=True, max_length=500)
     about = models.TextField('Описание профиля', max_length=256, blank=True)
@@ -39,7 +39,7 @@ class User(AbstractUser):
 
     objects = CustomUserManager()
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name', 'surname', 'phone']
+    REQUIRED_FIELDS = ['name', 'surname']
 
     def save(self, *args, **kwargs):
         if not self.avatar:

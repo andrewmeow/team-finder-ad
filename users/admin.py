@@ -1,27 +1,40 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User
+from projects.models import Project, Skill
 
 
+@admin.register(User)
 class CustomUserAdmin(UserAdmin):
+    ordering = ('email',)
     list_display = ('email', 'name', 'surname', 'is_staff', 'is_active')
-    list_filter = ('is_staff', 'is_active')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('name', 'surname',
-         'avatar', 'phone', 'github_url', 'about')}),
-        ('Permissions', {'fields': ('is_staff', 'is_active',
-         'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        ('Личная информация', {
+            'fields': ('name', 'surname', 'avatar', 'phone', 'github_url', 'about')
+        }),
+        ('Разрешения', {
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')
+        }),
+        ('Важные даты', {'fields': ('last_login', 'date_joined')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'name', 'surname', 'phone', 'password1', 'password2'),
+            'fields': ('email', 'name', 'password1', 'password2'),
         }),
     )
-    search_fields = ('email', 'name', 'surname')
-    ordering = ('email',)
 
 
-admin.site.register(User, CustomUserAdmin)
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('name', 'owner', 'status', 'created_at')
+    list_filter = ('status', 'skills')
+    search_fields = ('name', 'description')
+    ordering = ('-created_at',)
+
+
+@admin.register(Skill)
+class SkillAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
