@@ -1,4 +1,4 @@
-from django.urls import path, include, reverse_lazy
+from django.urls import path, include
 from .forms import CustomAuthenticationForm
 from . import views
 app_name = 'users'
