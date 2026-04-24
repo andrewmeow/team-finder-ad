@@ -37,6 +37,7 @@ class User(AbstractUser):
     is_active = models.BooleanField('Активный', default=True)
     is_staff = models.BooleanField('Администратор', default=False)
 
+    objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name', 'surname', 'phone']
 
