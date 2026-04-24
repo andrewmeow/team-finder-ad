@@ -1,0 +1,28 @@
+# Служебные файлы и папки
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.log
+*.sqlite3
+*.db
+
+# Виртуальное окружение
+venv
+.env
+env
+*.egg-info
+
+# Документация
+*.md
+README*
+docs/
+
+# Файлы разработки
+.git
+.gitignore
+.vscode
+.idea
+*.swp
+*.swo

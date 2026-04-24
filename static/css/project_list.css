@@ -223,8 +223,8 @@
 }
 
 .filter-chip.active {
-    border-color: #333;
-    background: #333;
+    border-color: #007bff;
+    background: #007bff;
     color: white;
 }
 
