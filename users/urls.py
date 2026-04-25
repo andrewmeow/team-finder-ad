@@ -1,16 +1,18 @@
-from django.urls import path, include
-from .forms import CustomAuthenticationForm
-from . import views
+from django.urls import include, path
+
+from users import views
+from users.forms import TeamFinderUserManager
+
 app_name = 'users'
 
 urlpatterns = [
-    path('register/', views.CustomSignUpView.as_view(), name='register',),
-    path('login/', views.CustomLoginView.as_view(
+    path('register/', views.SignUpView.as_view(), name='register',),
+    path('login/', views.TeamFinderLoginView.as_view(
         template_name='registration/login.html',
-        form_class=CustomAuthenticationForm,
+        form_class=TeamFinderUserManager,
     ), name='login'),
     path('edit-profile/', views.ProfileUpdateView.as_view(), name='edit-profile'),
-    path('change_password/', views.CustomPasswordChangeView.as_view(),
+    path('change_password/', views.TeamFinderPasswordChangeView.as_view(),
          name='password_change'),
     path('', include('django.contrib.auth.urls')),
     path('list/', views.UserListView.as_view(), name='list'),

@@ -1,15 +1,19 @@
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from django.shortcuts import redirect
+from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import PasswordChangeView, LoginView
-from django.urls import reverse_lazy, reverse
-from .models import User
-from .forms import CustomUserChangeForm, CustomUserCreationForm
+from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.shortcuts import redirect
+from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
+
+from team_finder.constants import PAGINATE_BY
+from users.forms import ProfileEditForm, SignUpForm
+
+User = get_user_model()
 
 
-class CustomSignUpView(CreateView):
+class SignUpView(CreateView):
     template_name = 'registration/register.html'
-    form_class = CustomUserCreationForm
+    form_class = SignUpForm
     success_url = reverse_lazy('projects:project_list')
 
     def dispatch(self, request, *args, **kwargs):
@@ -18,14 +22,14 @@ class CustomSignUpView(CreateView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class CustomLoginView(LoginView):
+class TeamFinderLoginView(LoginView):
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return redirect(self.get_success_url())
         return super().dispatch(request, *args, **kwargs)
 
 
-class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+class TeamFinderPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     template_name = 'registration/password_change_form.html'
 
     def get_success_url(self):
@@ -36,7 +40,7 @@ class UserListView(ListView):
     model = User
     template_name = 'users/participants.html'
     context_object_name = 'participants'
-    paginate_by = 12
+    paginate_by = PAGINATE_BY
 
 
 class UserDetailView(DetailView):
@@ -54,11 +58,11 @@ class UserDetailView(DetailView):
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = User
-    form_class = CustomUserChangeForm
+    form_class = ProfileEditForm
     template_name = 'users/edit_profile.html'
 
     def get_object(self, queryset=None):
         return self.request.user
 
     def get_success_url(self):
-        return reverse_lazy('users:profile', kwargs={'page_id': self.object.id})
+        return reverse('users:profile', kwargs={'page_id': self.object.id})

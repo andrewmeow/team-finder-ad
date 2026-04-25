@@ -1,13 +1,15 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User
-from projects.models import Project, Skill
+from django.utils.html import format_html
+
+from users.models import User
 
 
 @admin.register(User)
-class CustomUserAdmin(UserAdmin):
+class TeamFinderUserAdmin(UserAdmin):
     ordering = ('email',)
-    list_display = ('email', 'name', 'surname', 'is_staff', 'is_active')
+    list_display = ('avatar_preview', 'email', 'name',
+                    'surname', 'is_staff', 'is_active')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Личная информация', {
@@ -25,16 +27,11 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
 
-
-@admin.register(Project)
-class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('name', 'owner', 'status', 'created_at')
-    list_filter = ('status', 'skills')
-    search_fields = ('name', 'description')
-    ordering = ('-created_at',)
-
-
-@admin.register(Skill)
-class SkillAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    search_fields = ('name',)
+    @admin.display(description='Аватар')
+    def avatar_preview(self, obj):
+        if obj.avatar:
+            return format_html(
+                '<img src="{}" style="width:40px; height:40px; border-radius:50%;" />',
+                obj.avatar.url
+            )
+        return '-'

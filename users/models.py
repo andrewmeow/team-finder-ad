@@ -1,45 +1,39 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser, BaseUserManager
 import random
-from PIL import Image, ImageDraw, ImageFont
 from io import BytesIO
-from django.core.files.base import ContentFile
+
+from django.contrib.auth.models import AbstractUser
 from django.contrib.staticfiles.finders import find
+from django.core.files.base import ContentFile
+from django.db import models
+from PIL import Image, ImageDraw, ImageFont
 
-
-class CustomUserManager(BaseUserManager):
-    def create_user(self, email, password, **extra_fields):
-        if not email:
-            raise ValueError('Email обязателен')
-        email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-        return self.create_user(email, password, **extra_fields)
+from team_finder.constants import (USER_ABOUT_MAX_LENGTH,
+                                   USER_GITHUB_URL_MAX_LENGTH,
+                                   USER_NAME_MAX_LENGTH, USER_PHONE_MAX_LENGTH,
+                                   USER_SURNAME_MAX_LENGTH)
+from users.managers import TeamFinderUserManager
 
 
 class User(AbstractUser):
     username = None
     email = models.EmailField('Email', unique=True)
-    name = models.CharField('Имя', max_length=124)
-    surname = models.CharField('Фамилия', max_length=124)
+    name = models.CharField('Имя', max_length=USER_NAME_MAX_LENGTH)
+    surname = models.CharField('Фамилия', max_length=USER_SURNAME_MAX_LENGTH)
     avatar = models.ImageField(
         'Аватар', upload_to='users_avatars', blank=True)
-    phone = models.CharField('Телефон', max_length=12, blank=True)
+    phone = models.CharField(
+        'Телефон', max_length=USER_PHONE_MAX_LENGTH, blank=True)
     github_url = models.URLField(
-        'Ссылка на профиль GitHub', blank=True, null=True, max_length=500)
-    about = models.TextField('Описание профиля', max_length=256, blank=True)
+        'Ссылка на профиль GitHub', blank=True, null=True, max_length=USER_GITHUB_URL_MAX_LENGTH)
+    about = models.TextField(
+        'Описание профиля', max_length=USER_ABOUT_MAX_LENGTH, blank=True)
     is_active = models.BooleanField('Активный', default=True)
     is_staff = models.BooleanField('Администратор', default=False)
 
-    objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name', 'surname']
+
+    objects = TeamFinderUserManager()
 
     def save(self, *args, **kwargs):
         if not self.avatar:

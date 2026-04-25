@@ -1,14 +1,18 @@
 import re
-from django import forms
-from django.core.exceptions import ValidationError
-from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserChangeForm, AuthenticationForm
 from urllib.parse import urlparse
-from .models import User
+
+from django import forms
+from django.contrib.auth import authenticate
+from django.contrib.auth.forms import AuthenticationForm, UserChangeForm
+from django.core.exceptions import ValidationError
+
+from users.models import User
+
+GITHUB_URL = 'github.com'
 
 
 def clean_github(self):
-    url = self.cleaned_data.get('github_url')
+    url = self.cleaned_data.get(GITHUB_URL)
     if not url:
         return url
 
@@ -18,13 +22,13 @@ def clean_github(self):
         raise ValidationError(
             'Некорректный URL. Используйте http:// или https://')
 
-    if not (parsed.netloc == 'github.com' or parsed.netloc.endswith('.github.com')):
-        raise ValidationError('Ссылка должна вести на GitHub (github.com)')
+    if not (parsed.netloc == GITHUB_URL or parsed.netloc.endswith(GITHUB_URL)):
+        raise ValidationError(f'Ссылка должна вести на GitHub {GITHUB_URL}')
 
     return url
 
 
-class CustomAuthenticationForm(AuthenticationForm):
+class TeamFinderUserManager(AuthenticationForm):
     email = forms.EmailField(
         label='Email',
         widget=forms.EmailInput(attrs={'autofocus': True}),
@@ -59,7 +63,7 @@ class CustomAuthenticationForm(AuthenticationForm):
         return self.cleaned_data
 
 
-class CustomUserCreationForm(forms.ModelForm):
+class SignUpForm(forms.ModelForm):
     password = forms.CharField(
         label='Пароль',
         widget=forms.PasswordInput,
@@ -105,7 +109,7 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
 
-class CustomUserChangeForm(UserChangeForm):
+class ProfileEditForm(UserChangeForm):
     class Meta:
         model = User
         fields = ('name', 'surname', 'avatar', 'phone', 'github_url', 'about')
