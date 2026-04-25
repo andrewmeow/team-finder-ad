@@ -71,7 +71,7 @@ cp .env_example .env
 ### 3. Запуск контейнеров
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 `-d` значит `detach`, то есть контейнер продолжит работать в фоне. Чтобы его остановить, надо будет ввести
 
@@ -87,14 +87,14 @@ docker compose down
 ### 4. Создание суперпользователя
 
 ```bash
-docker-compose exec web python manage.py createsuperuser
+docker compose exec web python manage.py createsuperuser
 ```
 
 ### 5. Заполнение тестовыми данными (опционально)
 
 Для контейнера Docker:
 ```bash
-docker-compose exec web python manage.py filldb
+docker compose exec web python manage.py filldb
 ```
 
 Команда `filldb` создаёт:
@@ -113,7 +113,7 @@ docker-compose exec web python manage.py filldb
 
 **Предварительные требования:**
 - Python 3.10+
-- Установленный и настроенный PostgreSQL (можно запустить отдельный контейнер только с PostgreSQL, используя `docker-compose up -d db`)
+- Установленный и настроенный PostgreSQL (можно запустить отдельный контейнер только с PostgreSQL, используя `docker compose up -d db`)
 
 ### 1. Клонирование репозитория и виртуальное окружение
 
